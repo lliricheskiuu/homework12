@@ -20,7 +20,7 @@ def write_csv(data):
     with open(filename, 'w', encoding="utf-8") as csv_file:
         fieldnames = data[0].keys()
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-        # writer.writeheader()  # не знаю как правильно написать заголовки
+        writer.writeheader()  # не знаю как правильно написать заголовки
         writer.writerows(data)  # не знаю как убрать ненужные ключи
 
 
