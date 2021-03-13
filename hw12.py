@@ -9,6 +9,9 @@
 
 # requests
 
+import json
+import time as t
+import re
 import requests
 import csv
 
@@ -67,10 +70,6 @@ write_csv(get_quote(3))
 
 # 2.3) Написать функцию, которая сохраняет результат пункта 2.2 в json файл.
 
-import json
-import time as t
-import re
-
 # 2.1)
 
 file_name = 'authors.txt'
@@ -82,7 +81,9 @@ def read_txt(file: str) -> list:
     with open(file, 'r') as txt_file:
         data = txt_file.readlines()
         for line in data:
-            if re.findall(look_for_date, line):
+            # if re.findall(look_for_date, line):
+            #     res.append(line)
+            if 'birthday' in line or 'death' in line:
                 res.append(line)
     return res
 
@@ -98,19 +99,20 @@ look_for_names = r"[A-Z][a-z]+\s[A-Z][a-z]+'"
 def create_dict(data: list) -> list:
     result = []
     rep = ['nd', 'th', 'st', 'rd']
+
     for line in data:
-        name = re.findall(look_for_names, line)
         date = re.findall(look_for_date, line)
-        if name:  # без проверки появляются пустые списки
-            name = ' '.join(name)                #
-            name = name[:-1]                     #
-            date = ' '.join(date)                # как
-            for i in rep:                        # смог
-                date = date.replace(i, '')       # так
-            date = t.strptime(date, "%d %B %Y")  # и
-            date = t.strftime('%d/%m/%Y', date)  # сделал
-            res = {'name': name, 'date': date}   #
-            result.append(res)                   #
+        name = line.split("-", 1)[-1]
+        name = name.split("'")[0]
+
+        if len(name.split()) <= 3:
+            date = ' '.join(date)
+            for i in rep:
+                date = date.replace(i, '')
+            date = t.strptime(date, "%d %B %Y")
+            date = t.strftime('%d/%m/%Y', date)
+            res = {'name': name, 'date': date}
+            result.append(res)
     return result
 
 
